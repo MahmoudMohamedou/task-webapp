@@ -236,6 +236,7 @@ export const Home: FC = () => {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              zIndex: 1400,
             },
           }}
         >
@@ -248,6 +249,7 @@ export const Home: FC = () => {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              zIndex: 1400,
             },
           }}
           open

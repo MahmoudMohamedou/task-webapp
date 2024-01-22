@@ -9,6 +9,7 @@ import KanbanToolbar from "./KanbanToolbar";
 
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
 `;
 
 const TaskList = styled.div`
@@ -30,6 +31,12 @@ const TaskColumnStyles = styled.div`
   /*min-height: 80vh;*/
 `;
 
+const TaskColumnStickyHeader = styled(TaskColumnStyles)`
+  position: sticky;
+  top: 65px;
+  z-index: 1200;
+`;
+
 const Title = styled.span`
   padding: 2px 10px;
   align-self: flex-start;
@@ -40,6 +47,12 @@ const ColumnHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: #f3f3f3;
+  width: 250px;
+  min-width: 250px;
+  border-radius: 5px;
+  padding: 8px;
+  margin-right: 20px;
 `;
 
 const TaskCount = styled.span`
@@ -188,6 +201,16 @@ const Kanban = () => {
         <KanbanToolbar onColumnsChange={setColumns} />
       </Box>
       <Container>
+        <TaskColumnStickyHeader>
+          {Object.entries(columns).map(([columnId, column]) => {
+            return (
+              <ColumnHeader key={columnId}>
+                <Title>{column.title}</Title>
+                <TaskCount>{column.items.length}</TaskCount>
+              </ColumnHeader>
+            );
+          })}
+        </TaskColumnStickyHeader>
         <TaskColumnStyles>
           {Object.entries(columns).map(([columnId, column]) => {
             return (
@@ -197,10 +220,6 @@ const Kanban = () => {
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    <ColumnHeader>
-                      <Title>{column.title}</Title>
-                      <TaskCount>{column.items.length}</TaskCount>
-                    </ColumnHeader>
                     {column.items.map((item, index) => (
                       <TaskCard
                         key={item.id}

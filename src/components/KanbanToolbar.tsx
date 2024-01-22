@@ -57,7 +57,7 @@ const KanbanToolbar: FunctionComponent<KanbanToolbarProps> = ({
             title: res.title,
             status: res.status,
             priority: res.priority,
-            assignee: res.assignee,
+            assignedTo: res.assignedTo,
           };
           setEditTask(DEFAULT_VALUE);
           onColumnsChange((prevState) => ({
