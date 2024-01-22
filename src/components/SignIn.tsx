@@ -10,16 +10,22 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { FC } from "react";
+import { AuthContext } from "../Auth/AuthContext";
+import { useNavigate } from "react-router-dom";
+import MyAlert from "./Alert";
 
 interface SignInProps {}
 
 type FormSignData = {
   email?: string;
   password?: string;
+  signInError?: string;
 };
 
 export const SignIn: FC<SignInProps> = () => {
   const [errors, setErrors] = React.useState<FormSignData>({});
+  const { setAuth } = React.useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -37,7 +43,33 @@ export const SignIn: FC<SignInProps> = () => {
       buildErrors.password = "This Field is required!";
     }
 
-    setErrors(buildErrors);
+    if (Object.keys(buildErrors).length !== 0) {
+      setErrors(buildErrors);
+      return;
+    }
+
+    fetch(import.meta.env.VITE_API_URL_LOGIN!, {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      credentials: "include",
+
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        const data = res.statusCode === undefined ? res : null;
+        //console.log(state, state?.path || "/home");
+        setAuth(data);
+        return res;
+      })
+      .then((res) => {
+        if (res.statusCode === undefined) navigate("/home");
+        else setErrors({ signInError: res.message });
+      });
+
+    //
     // console.log({
     //   email: data.get("email"),
     //   password: data.get("password"),
@@ -55,6 +87,13 @@ export const SignIn: FC<SignInProps> = () => {
           alignItems: "center",
         }}
       >
+        {errors.signInError && (
+          <MyAlert
+            message={errors.signInError}
+            severity="error"
+            variant="filled"
+          />
+        )}
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>

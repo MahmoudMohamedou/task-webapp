@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useContext, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -15,9 +15,12 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import { makeStyles } from "@mui/styles";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Badge, ListSubheader, Stack, Theme } from "@mui/material";
+import { Badge, ListSubheader, Popover, Stack, Theme } from "@mui/material";
 import { ChevronLeft, ChevronRight, Notifications } from "@mui/icons-material";
 import AvatarLogo from "./AvatarLogo";
+import UserProfile from "./UserProfile";
+import { AuthContext } from "../Auth/AuthContext";
+import Kanban from "./Kanban";
 
 const useStyles = makeStyles(() => ({
   toolbar: {
@@ -30,18 +33,18 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const LAYOUT: { [key: string]: JSX.Element } = {
-  home: <div>Home</div>,
-};
-
 export const Home: FC = () => {
   const navigate = useNavigate();
+  const { auth } = useContext(AuthContext);
   const { pathname } = useLocation();
-  const [layout, setLayout] = useState<JSX.Element | null>(null);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   const [expandNavBar, setExpandNavBar] = useState(true);
   const [drawerWidth, setDrawerWidth] = useState(240);
+  const [anchorEl, setAnchorEl] = useState<(EventTarget & HTMLElement) | null>(
+    null
+  );
+  console.log(auth);
   const classes = useStyles();
 
   const handleDrawerClose = () => {
@@ -65,10 +68,31 @@ export const Home: FC = () => {
   };
 
   const handleClickHome = (key: string) => {
-    navigate({
-      pathname: `/${key}`,
-    });
-    setLayout(LAYOUT[key]);
+    navigate(`/${key}`);
+    //setLayout(LAYOUT[key]);
+  };
+
+  const handleClickAvatar = (e: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(anchorEl ? null : e.currentTarget);
+  };
+
+  const handleProfileClose = () => {
+    setAnchorEl(null);
+  };
+
+  const renderLayout = () => {
+    let element;
+
+    switch (pathname) {
+      case "/home": {
+        element = <Kanban />;
+        break;
+      }
+      default:
+        element = <div />;
+    }
+
+    return element;
   };
 
   const drawer = (
@@ -109,7 +133,7 @@ export const Home: FC = () => {
                   },
                 })}
               >
-                Home
+                Tasks
               </ListItemText>
             ) : null}
           </ListItemButton>
@@ -174,8 +198,8 @@ export const Home: FC = () => {
                 <Notifications htmlColor="white" />
               </Badge>
             </IconButton>
-            <IconButton>
-              <AvatarLogo username="Mohamed" />
+            <IconButton onClick={handleClickAvatar}>
+              <AvatarLogo username={auth!.name} />
             </IconButton>
           </Stack>
         </Toolbar>
@@ -223,12 +247,30 @@ export const Home: FC = () => {
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          justifyContent: "center",
+          position: "absolute",
+          left: `${drawerWidth}px`,
+          top: "64px",
+          paddingTop: "16px",
+          width: `calc(100% - ${drawerWidth}px)`,
+          // width: `calc(100% - ${drawerWidth}px)`,
+
+          // backgroundColor: "red",
         }}
       >
-        <Toolbar />
-        {layout}
+        {renderLayout()}
       </Box>
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          horizontal: "left",
+          vertical: "bottom",
+        }}
+        onClose={handleProfileClose}
+      >
+        <UserProfile />
+      </Popover>
     </Box>
   );
 };

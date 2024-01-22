@@ -3,6 +3,7 @@ import { SignIn } from "./components/SignIn";
 import { SignUp } from "./components/SignUp";
 import { Home } from "./components/Home";
 import ErrorPage from "./Error/ErrorPage";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -11,9 +12,9 @@ function App() {
         <Route
           path="/"
           element={
-            // <ProtectedRoute>
-            <Home />
-            // </ProtectedRoute>
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
           }
         />
         <Route path="/signin" element={<SignIn />} />
@@ -21,9 +22,9 @@ function App() {
         <Route
           path="/home"
           element={
-            // <ProtectedRoute>
-            <Home />
-            // </ProtectedRoute>
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
           }
         />
         <Route path="*" element={<ErrorPage />} />

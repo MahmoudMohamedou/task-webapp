@@ -2,17 +2,20 @@ import { useEffect, useState } from "react";
 import { UserAuthType } from "../types/UserAuthType";
 
 const useAuth = () => {
-  const [auth, setAuth] = useState<UserAuthType | null>(null);
-  console.log(import.meta.env.VITE_API_VALID_SESSION_URL);
+  const [auth, setAuth] = useState<UserAuthType | null>();
 
   useEffect(() => {
     // check if session is still valid
 
     fetch(import.meta.env.VITE_API_VALID_SESSION_URL!, {
       method: "GET",
+      credentials: "include",
     })
       .then((res) => res.json())
-      .then(setAuth)
+      .then((res) => {
+        console.log(res);
+        setAuth(res);
+      })
       .catch((e) => {
         console.error(e);
         setAuth(null);

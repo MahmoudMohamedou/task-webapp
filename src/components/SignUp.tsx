@@ -9,17 +9,76 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import useAuth from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import MyAlert from "./Alert";
 
-interface SignUpProps {}
+interface SignUpProps {
+  name: string;
+  email: string;
+  password: string;
+  repeatPassword: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  signUpError?: any;
+}
 
-export const SignUp: FC<SignUpProps> = () => {
+export const SignUp: FC = () => {
+  const [errors, setErrors] = React.useState<Partial<SignUpProps>>({});
+  const { setAuth } = useAuth();
+  const navigate = useNavigate();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const buildErrors: Partial<SignUpProps> = {};
     const data = new FormData(event.currentTarget);
+    const name = data.get("name");
+    const email = data.get("email");
+    const password = data.get("password");
+    const repeatPassword = data.get("repeatPassword");
+
+    if (!email) {
+      buildErrors.email = "This Field is required!";
+    }
+
+    if (!password) {
+      buildErrors.password = "This Field is required!";
+    }
+    if (!name) {
+      buildErrors.name = "This Field is required!";
+    }
+    if (!repeatPassword) {
+      buildErrors.repeatPassword = "This Field is required!";
+    } else if (repeatPassword !== password) {
+      buildErrors.repeatPassword = "The two paswords doesn't match!";
+    }
+
+    if (Object.keys(buildErrors).length !== 0) {
+      setErrors(buildErrors);
+      return;
+    }
     console.log({
       email: data.get("email"),
       password: data.get("password"),
     });
+
+    fetch(import.meta.env.VITE_API_URL_SIGNUP!, {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify({ email, password, name, repeatPassword }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        const data = res.statusCode === undefined ? res : null;
+        setAuth(data);
+        return res;
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.statusCode === undefined) navigate("/home");
+        else setErrors({ signUpError: res.message });
+      });
   };
 
   return (
@@ -33,6 +92,13 @@ export const SignUp: FC<SignUpProps> = () => {
           alignItems: "center",
         }}
       >
+        {errors.signUpError && (
+          <MyAlert
+            severity="error"
+            variant="filled"
+            message={errors.signUpError}
+          />
+        )}
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
@@ -44,12 +110,14 @@ export const SignUp: FC<SignUpProps> = () => {
             <Grid item xs={12}>
               <TextField
                 autoComplete="given-name"
-                name="firstName"
+                name="name"
                 required
                 fullWidth
-                id="firstName"
+                id="name"
                 label="Name"
                 autoFocus
+                error={Boolean(errors.name)}
+                helperText={errors.name || ""}
               />
             </Grid>
             {/* <Grid item xs={12} sm={6}>
@@ -70,6 +138,8 @@ export const SignUp: FC<SignUpProps> = () => {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                error={Boolean(errors.email)}
+                helperText={errors.email || ""}
               />
             </Grid>
             <Grid item xs={12}>
@@ -81,6 +151,21 @@ export const SignUp: FC<SignUpProps> = () => {
                 type="password"
                 id="password"
                 autoComplete="new-password"
+                error={Boolean(errors.password)}
+                helperText={errors.password || ""}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                name="repeatPassword"
+                label="Confirm password"
+                type="password"
+                id="repeatPassword"
+                autoComplete="new-password"
+                error={Boolean(errors.repeatPassword)}
+                helperText={errors.repeatPassword || ""}
               />
             </Grid>
             {/* <Grid item xs={12}>

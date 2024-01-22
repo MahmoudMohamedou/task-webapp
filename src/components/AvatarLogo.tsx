@@ -1,5 +1,6 @@
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
+import { Tooltip } from "@mui/material";
 
 function stringToColor(string: string) {
   let hash = 0;
@@ -33,10 +34,22 @@ function stringAvatar(name: string) {
 interface AvatarLogoProps {
   username: string;
   logoURL?: string;
+  className?: string;
 }
 
-const AvatarLogo: React.FunctionComponent<AvatarLogoProps> = ({ username }) => {
-  return <Avatar {...stringAvatar(username)} />;
+const AvatarLogo: React.FunctionComponent<AvatarLogoProps> = ({
+  username,
+  className,
+}) => {
+  return (
+    <Tooltip title={username || "Not Assigned"}>
+      {username ? (
+        <Avatar {...stringAvatar(username)} className={className} />
+      ) : (
+        <Avatar className={className} />
+      )}
+    </Tooltip>
+  );
 };
 
 export default AvatarLogo;

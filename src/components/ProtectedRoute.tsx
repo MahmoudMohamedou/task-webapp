@@ -1,6 +1,6 @@
 import { FC, PropsWithChildren, useContext } from "react";
-import { AuthContext } from "../Auth/AuthContext";
 import { Navigate, useLocation } from "react-router-dom";
+import { AuthContext } from "../Auth/AuthContext";
 
 export const ProtectedRoute: FC<PropsWithChildren> = ({ children }) => {
   const { auth } = useContext(AuthContext);
