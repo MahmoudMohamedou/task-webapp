@@ -33,18 +33,28 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const loadNavbarState = () => {
+  const state = localStorage.getItem("nav-bar-state");
+
+  return state && state !== null ? JSON.parse(state) : null;
+};
+
+const loadDrawerWidth = () => {
+  const state = localStorage.getItem("nav-bar-state");
+  return state && state !== null ? (JSON.parse(state) ? 240 : 100) : 100;
+};
+
 export const Home: FC = () => {
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
   const { pathname } = useLocation();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
-  const [expandNavBar, setExpandNavBar] = useState(true);
-  const [drawerWidth, setDrawerWidth] = useState(240);
+  const [expandNavBar, setExpandNavBar] = useState(loadNavbarState());
+  const [drawerWidth, setDrawerWidth] = useState(loadDrawerWidth());
   const [anchorEl, setAnchorEl] = useState<(EventTarget & HTMLElement) | null>(
     null
   );
-  console.log(auth);
   const classes = useStyles();
 
   const handleDrawerClose = () => {
@@ -64,7 +74,10 @@ export const Home: FC = () => {
 
   const handleNavBarToggle = () => {
     setDrawerWidth(expandNavBar ? 100 : 240);
-    setExpandNavBar(!expandNavBar);
+    const state = !expandNavBar;
+    // Store in Localestorage
+    localStorage.setItem("nav-bar-state", JSON.stringify(state));
+    setExpandNavBar(state);
   };
 
   const handleClickHome = (key: string) => {
