@@ -76,6 +76,9 @@ const KanbanToolbar: FunctionComponent<KanbanToolbarProps> = ({
       <Button
         variant="contained"
         size="medium"
+        disableRipple
+        disableTouchRipple
+        disableFocusRipple
         startIcon={<Add />}
         onClick={() => setOpen(true)}
       >
@@ -87,6 +90,8 @@ const KanbanToolbar: FunctionComponent<KanbanToolbarProps> = ({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            fontStyle: "italic",
+            textTransform: "uppercase",
           }}
         >
           <span>Add new Task</span>
@@ -98,7 +103,12 @@ const KanbanToolbar: FunctionComponent<KanbanToolbarProps> = ({
           <TaskEditPanel editTask={editTask} onTaskChange={setEditTask} />
         </DialogContent>
         <DialogActions>
-          <Button variant="text" size="small" onClick={handleCancel}>
+          <Button
+            variant="text"
+            color="inherit"
+            size="small"
+            onClick={handleCancel}
+          >
             Cancel
           </Button>
           <Button variant="contained" size="small" onClick={handleSave}>

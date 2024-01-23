@@ -1,4 +1,10 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled from "@emotion/styled";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import TaskCard from "./TaskCard";
@@ -7,9 +13,16 @@ import { StrictModeDroppable } from "./DroppableStrictMode";
 import { Box, Typography } from "@mui/material";
 import KanbanToolbar from "./KanbanToolbar";
 
+type Props = {
+  drawerWidth: number;
+};
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  height: calc(100vh - 190px);
+  width: ${({ drawerWidth }: Props) => `calc(100vw - 48px - ${drawerWidth}px);`}
+  overflow: auto;
 `;
 
 const TaskList = styled.div`
@@ -32,9 +45,9 @@ const TaskColumnStyles = styled.div`
 `;
 
 const TaskColumnStickyHeader = styled(TaskColumnStyles)`
-  position: sticky;
-  top: 65px;
-  z-index: 1200;
+  // position: sticky;
+  // top: 65px;
+  // z-index: 1200;
 `;
 
 const Title = styled.span`
@@ -59,8 +72,9 @@ const TaskCount = styled.span`
   font-weight: 600;
 `;
 
-const Kanban = () => {
+const Kanban: React.FC<Props> = ({ drawerWidth }) => {
   const [columns, setColumns] = useState<Column | null>(null);
+  const headerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     fetch(import.meta.env.VITE_API_URL_TASK!, {
@@ -183,6 +197,12 @@ const Kanban = () => {
     }
   };
 
+  const handleScrollX = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    if (!headerRef?.current) return;
+    headerRef.current.style.position = "relative";
+    headerRef.current.style.left = `-${e.currentTarget.scrollLeft}px`;
+  };
+
   if (!columns) return null;
 
   return (
@@ -195,22 +215,23 @@ const Kanban = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          //marginTop: 1,
         }}
       >
         <Typography variant="h4">Tasks</Typography>
         <KanbanToolbar onColumnsChange={setColumns} />
       </Box>
-      <Container>
-        <TaskColumnStickyHeader>
-          {Object.entries(columns).map(([columnId, column]) => {
-            return (
-              <ColumnHeader key={columnId}>
-                <Title>{column.title}</Title>
-                <TaskCount>{column.items.length}</TaskCount>
-              </ColumnHeader>
-            );
-          })}
-        </TaskColumnStickyHeader>
+      <TaskColumnStickyHeader ref={headerRef}>
+        {Object.entries(columns).map(([columnId, column]) => {
+          return (
+            <ColumnHeader key={columnId}>
+              <Title>{column.title}</Title>
+              <TaskCount>{column.items.length}</TaskCount>
+            </ColumnHeader>
+          );
+        })}
+      </TaskColumnStickyHeader>
+      <Container drawerWidth={drawerWidth} onScroll={(e) => handleScrollX(e)}>
         <TaskColumnStyles>
           {Object.entries(columns).map(([columnId, column]) => {
             return (

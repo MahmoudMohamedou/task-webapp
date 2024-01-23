@@ -121,7 +121,16 @@ const TaskEditPanel: FunctionComponent<Props> = ({
           label="Title"
           required
           size="small"
-          sx={{ width: "100%", marginTop: 1 }}
+          sx={(theme) => ({
+            width: "100%",
+            marginTop: 1,
+            "& .MuiInputLabel-root": {
+              color: "inherit",
+            },
+            "& .Mui-focused": {
+              color: theme.palette.primary.main,
+            },
+          })}
           value={editTask?.title}
           onChange={(e) => handleTaskTitleChange(e)}
         />
@@ -138,6 +147,14 @@ const TaskEditPanel: FunctionComponent<Props> = ({
           renderOption={(props, option) => (
             <AssigneeOption {...props} key={option.value} option={option} />
           )}
+          sx={(theme) => ({
+            "& .MuiInputLabel-root": {
+              color: "inherit",
+            },
+            "& .Mui-focused": {
+              color: theme.palette.primary.main,
+            },
+          })}
         />
       </Grid>
       <Grid item xs={12}>
@@ -152,6 +169,14 @@ const TaskEditPanel: FunctionComponent<Props> = ({
           renderOption={(props, option) => (
             <PriorityOption {...props} key={option.value} option={option} />
           )}
+          sx={(theme) => ({
+            "& .MuiInputLabel-root": {
+              color: "inherit",
+            },
+            "& .Mui-focused": {
+              color: theme.palette.primary.main,
+            },
+          })}
         />
       </Grid>
 

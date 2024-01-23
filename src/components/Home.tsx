@@ -98,7 +98,7 @@ export const Home: FC = () => {
 
     switch (pathname) {
       case "/home": {
-        element = <Kanban />;
+        element = <Kanban drawerWidth={drawerWidth} />;
         break;
       }
       default:
