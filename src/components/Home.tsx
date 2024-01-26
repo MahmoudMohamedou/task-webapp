@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from "react";
+import React, { FC, useContext, useEffect, useRef, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -46,6 +46,7 @@ const loadDrawerWidth = () => {
 
 export const Home: FC = () => {
   const navigate = useNavigate();
+  const kanbanRef = useRef<HTMLDivElement | null>(null);
   const { auth } = useContext(AuthContext);
   const { pathname } = useLocation();
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -108,6 +109,12 @@ export const Home: FC = () => {
     return element;
   };
 
+  useEffect(() => {
+    if (kanbanRef.current && pathname === "/") {
+      kanbanRef.current.click();
+    }
+  }, [pathname, kanbanRef]);
+
   const drawer = (
     <div>
       <Toolbar className={classes.toolbar}>
@@ -124,6 +131,7 @@ export const Home: FC = () => {
       >
         <ListItem alignItems="center" disablePadding>
           <ListItemButton
+            ref={kanbanRef}
             selected={pathname === "/home"}
             onClick={() => handleClickHome("home")}
           >

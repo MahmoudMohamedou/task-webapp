@@ -6,10 +6,20 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  colors,
 } from "@mui/material";
-import { Dispatch, FunctionComponent, SetStateAction, useState } from "react";
+import React, {
+  Dispatch,
+  FunctionComponent,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 import TaskEditPanel from "./TaskEditPanel";
 import { Column, TaskEditItem } from "../types/Column";
+import { Editor, convertToRaw } from "draft-js";
+import { AuthContext } from "../Auth/AuthContext";
+import ToastSuccess from "./ToastSuccess";
 
 interface KanbanToolbarProps {
   onColumnsChange: Dispatch<SetStateAction<Column | null>>;
@@ -24,7 +34,17 @@ const KanbanToolbar: FunctionComponent<KanbanToolbarProps> = ({
   onColumnsChange,
 }) => {
   const [open, setOpen] = useState(false);
-  const [editTask, setEditTask] = useState<TaskEditItem>(DEFAULT_VALUE);
+  const [showToast, setShowToast] = useState(false);
+  const { auth } = useContext(AuthContext);
+  const [editTask, setEditTask] = useState<TaskEditItem>({
+    title: "",
+    priority: "MEDIUM",
+    assignedTo: {
+      id: auth?.id,
+      name: auth?.name,
+    },
+  });
+  const editorRef = React.useRef<Editor | null>(null);
 
   function handleCancel(): void {
     setOpen(false);
@@ -37,8 +57,12 @@ const KanbanToolbar: FunctionComponent<KanbanToolbarProps> = ({
       status: "TODO",
       assigneeId: editTask.assignedTo?.id,
     };
+    const description =
+      editorRef.current?.props.editorState.getCurrentContent();
+    if (description !== undefined) {
+      body.description = JSON.stringify(convertToRaw(description));
+    }
     delete body["assignedTo"];
-    console.log(body, editTask);
     fetch(import.meta.env.VITE_API_URL_TASK!, {
       method: "POST",
       credentials: "include",
@@ -51,12 +75,14 @@ const KanbanToolbar: FunctionComponent<KanbanToolbarProps> = ({
       .then((res) => {
         if (res.statusCode === undefined) {
           setOpen(false);
+          setShowToast(true);
           const newItem = {
             id: res.id,
             idNum: res.idNum,
             title: res.title,
             status: res.status,
             priority: res.priority,
+            description: res.description,
             assignedTo: res.assignedTo,
           };
           setEditTask(DEFAULT_VALUE);
@@ -84,7 +110,14 @@ const KanbanToolbar: FunctionComponent<KanbanToolbarProps> = ({
       >
         Add Task
       </Button>
-      <Dialog open={open}>
+      <Dialog
+        open={open}
+        sx={{
+          "& .MuiDialog-paper": {
+            maxWidth: "650px",
+          },
+        }}
+      >
         <DialogTitle
           sx={{
             display: "flex",
@@ -100,7 +133,11 @@ const KanbanToolbar: FunctionComponent<KanbanToolbarProps> = ({
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <TaskEditPanel editTask={editTask} onTaskChange={setEditTask} />
+          <TaskEditPanel
+            ref={editorRef}
+            editTask={editTask}
+            onTaskChange={setEditTask}
+          />
         </DialogContent>
         <DialogActions>
           <Button
@@ -116,6 +153,13 @@ const KanbanToolbar: FunctionComponent<KanbanToolbarProps> = ({
           </Button>
         </DialogActions>
       </Dialog>
+      {showToast && (
+        <ToastSuccess
+          message="The task was successfuly created !"
+          variant="filled"
+          sx={{ backgroundColor: colors.green.A400 }}
+        />
+      )}
     </div>
   );
 };

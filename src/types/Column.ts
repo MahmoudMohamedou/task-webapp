@@ -1,10 +1,15 @@
 export type TaskItem = {
   title: string;
-  status: string;
+  status?: string;
   priority?: string;
-  id: string;
-  idNum: number;
+  id?: string;
+  idNum?: number;
+  description?: string;
   assignedTo?: {
+    id?: string;
+    name?: string;
+  } | null;
+  createdBy?: {
     id: string;
     name: string;
   };
@@ -25,4 +30,13 @@ export type TaskEditItem = {
     id?: string;
     name?: string;
   } | null;
+};
+
+export type PriorityType = {
+  label: string;
+  value: "HIGH" | "MEDIUM" | "LOW";
+};
+export type AssigneeType = {
+  label: string;
+  value: string;
 };

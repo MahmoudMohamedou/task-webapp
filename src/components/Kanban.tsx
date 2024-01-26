@@ -108,13 +108,15 @@ const Kanban: React.FC<Props> = ({ drawerWidth }) => {
           setColumns(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             res.reduce((acc: Column, r: TaskItem) => {
-              acc[r.status].items.push({
+              acc[r.status!].items.push({
                 id: r.id,
                 idNum: r.idNum,
                 title: r.title,
                 status: r.status,
                 priority: r.priority,
                 assignedTo: r.assignedTo,
+                description: r.description,
+                createdBy: r.createdBy,
               });
 
               return acc;
