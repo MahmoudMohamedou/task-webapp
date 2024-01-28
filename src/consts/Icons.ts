@@ -1,4 +1,4 @@
-import { mdiArrowDown, mdiArrowUp, mdiCancel } from "@mdi/js";
+import { mdiArrowDown, mdiArrowUp, mdiCancel, mdiHome } from "@mdi/js";
 
 export const icons: {
   [key: string]: string;
@@ -6,4 +6,5 @@ export const icons: {
   mdiArrowUp: mdiArrowUp,
   mdiArrowDown: mdiArrowDown,
   mdiCancel: mdiCancel,
+  mdiHome: mdiHome,
 };

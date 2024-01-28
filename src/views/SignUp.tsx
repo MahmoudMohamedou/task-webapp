@@ -10,7 +10,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useNavigate } from "react-router-dom";
-import MyAlert from "./Alert";
+import MyAlert from "../components/Alert";
 
 interface SignUpProps {
   name: string;
@@ -21,7 +21,7 @@ interface SignUpProps {
   signUpError?: any;
 }
 
-export const SignUp: FC = () => {
+const SignUp: FC = () => {
   const [errors, setErrors] = React.useState<Partial<SignUpProps>>({});
   const navigate = useNavigate();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -188,3 +188,5 @@ export const SignUp: FC = () => {
     </Container>
   );
 };
+
+export default SignUp;

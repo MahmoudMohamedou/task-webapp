@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import MyAlert from "./Alert";
+import MyAlert from "../components/Alert";
 import { Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 

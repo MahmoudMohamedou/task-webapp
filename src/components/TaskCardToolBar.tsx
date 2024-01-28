@@ -96,6 +96,7 @@ const TaskCardToolBar: FunctionComponent<TaskCardToolBarProps> = ({
   const handleClose = () => {
     const detectedChange = localStorage.getItem("detected-change");
     if (detectedChange && JSON.parse(detectedChange)) {
+      setShowTaskView(false);
       navigate("/");
       localStorage.setItem("detected-change", "false");
       return;

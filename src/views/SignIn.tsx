@@ -12,7 +12,7 @@ import Container from "@mui/material/Container";
 import { FC } from "react";
 import { AuthContext } from "../Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
-import MyAlert from "./Alert";
+import MyAlert from "../components/Alert";
 
 interface SignInProps {}
 
@@ -22,7 +22,7 @@ type FormSignData = {
   signInError?: string;
 };
 
-export const SignIn: FC<SignInProps> = () => {
+const SignIn: FC<SignInProps> = () => {
   const [errors, setErrors] = React.useState<FormSignData>({});
   const { setAuth } = React.useContext(AuthContext);
   const navigate = useNavigate();
@@ -154,3 +154,5 @@ export const SignIn: FC<SignInProps> = () => {
     </Container>
   );
 };
+
+export default SignIn;

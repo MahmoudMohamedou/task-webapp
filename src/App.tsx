@@ -1,34 +1,31 @@
 import { Route, Routes } from "react-router-dom";
-import { SignIn } from "./components/SignIn";
-import { SignUp } from "./components/SignUp";
-import { Home } from "./components/Home";
-import ErrorPage from "./Error/ErrorPage";
+import ErrorPage from "./views/Error/ErrorPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import SignUpSuccess from "./components/SignUpSuccess";
+import { routes } from "./routes";
+import { Page } from "./views/Page";
+import { Suspense } from "react";
 
 function App() {
   return (
     <div>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/auth/verify/account" element={<SignUpSuccess />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
+        {routes.map((r) => (
+          <Route
+            key={r.path}
+            path={r.path}
+            element={
+              r.protected === false ? (
+                <Suspense>
+                  <r.component />
+                </Suspense>
+              ) : (
+                <ProtectedRoute>
+                  <Page />
+                </ProtectedRoute>
+              )
+            }
+          />
+        ))}
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </div>
