@@ -4,6 +4,7 @@ import { SignUp } from "./components/SignUp";
 import { Home } from "./components/Home";
 import ErrorPage from "./Error/ErrorPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import SignUpSuccess from "./components/SignUpSuccess";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/auth/verify/account" element={<SignUpSuccess />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route

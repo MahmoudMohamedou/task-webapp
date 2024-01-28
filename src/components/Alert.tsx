@@ -7,6 +7,7 @@ interface MyAlertProps {
   severity?: "error" | "info" | "success" | "warning";
   message?: string;
   sx?: SxProps;
+  showCloseIcon?: boolean;
 }
 
 const MyAlert: FunctionComponent<MyAlertProps & PropsWithChildren> = ({
@@ -15,6 +16,7 @@ const MyAlert: FunctionComponent<MyAlertProps & PropsWithChildren> = ({
   variant,
   children,
   sx,
+  showCloseIcon = true,
 }) => {
   const [open, setOpen] = useState(true);
   return (
@@ -24,16 +26,18 @@ const MyAlert: FunctionComponent<MyAlertProps & PropsWithChildren> = ({
         severity={severity}
         sx={{ ...sx, padding: "8px 16px" }}
         action={
-          <IconButton
-            aria-label="close"
-            color="inherit"
-            size="small"
-            onClick={() => {
-              setOpen(false);
-            }}
-          >
-            <CloseIcon fontSize="inherit" />
-          </IconButton>
+          showCloseIcon ? (
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          ) : null
         }
       >
         {message || children}

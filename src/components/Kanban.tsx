@@ -96,6 +96,10 @@ const Kanban: React.FC<Props> = ({ drawerWidth }) => {
               title: "In progress",
               items: [],
             },
+            // TO_TEST: {
+            //   title: "To test",
+            //   items: [],
+            // },
             DONE: {
               title: "Done",
               items: [],

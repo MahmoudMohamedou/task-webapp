@@ -25,25 +25,21 @@ interface KanbanToolbarProps {
   onColumnsChange: Dispatch<SetStateAction<Column | null>>;
 }
 
-const DEFAULT_VALUE = {
-  title: "",
-  priority: "HIGH",
-};
-
 const KanbanToolbar: FunctionComponent<KanbanToolbarProps> = ({
   onColumnsChange,
 }) => {
   const [open, setOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const { auth } = useContext(AuthContext);
-  const [editTask, setEditTask] = useState<TaskEditItem>({
+  const DEFAULT_VALUE = {
     title: "",
     priority: "MEDIUM",
     assignedTo: {
       id: auth?.id,
       name: auth?.name,
     },
-  });
+  };
+  const [editTask, setEditTask] = useState<TaskEditItem>(DEFAULT_VALUE);
   const editorRef = React.useRef<Editor | null>(null);
 
   function handleCancel(): void {
@@ -85,7 +81,7 @@ const KanbanToolbar: FunctionComponent<KanbanToolbarProps> = ({
             description: res.description,
             assignedTo: res.assignedTo,
           };
-          setEditTask(DEFAULT_VALUE);
+          //setEditTask(DEFAULT_VALUE);
           onColumnsChange((prevState) => ({
             ...prevState!,
             [res.status]: {

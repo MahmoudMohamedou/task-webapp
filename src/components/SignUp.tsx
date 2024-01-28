@@ -9,7 +9,6 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import MyAlert from "./Alert";
 
@@ -24,7 +23,6 @@ interface SignUpProps {
 
 export const SignUp: FC = () => {
   const [errors, setErrors] = React.useState<Partial<SignUpProps>>({});
-  const { setAuth } = useAuth();
   const navigate = useNavigate();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -70,14 +68,9 @@ export const SignUp: FC = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        const data = res.statusCode === undefined ? res : null;
-        setAuth(data);
-        return res;
-      })
-      .then((res) => {
-        console.log(res);
-        if (res.statusCode === undefined) navigate("/home");
-        else setErrors({ signUpError: res.message });
+        if (res.statusCode === undefined) {
+          navigate("/auth/verify/account");
+        }
       });
   };
 
