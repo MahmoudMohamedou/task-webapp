@@ -4,11 +4,11 @@ import AvatarLogo from "./AvatarLogo";
 import Icon from "@mdi/react";
 import { getTaskPriorityIcon } from "../utils/getTaskPriorityIcon";
 import { icons } from "../consts/Icons";
-import { Tooltip } from "@mui/material";
 import { formatIdNum } from "../utils/formatIdNum";
 import TaskCardToolBar from "./TaskCardToolBar";
 import { Dispatch, SetStateAction } from "react";
 import { Column } from "../types/Column";
+import { Tooltip } from "@mui/material";
 
 const TaskInformation = styled.div`
   display: flex;

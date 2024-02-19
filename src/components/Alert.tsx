@@ -1,11 +1,13 @@
 import CloseIcon from "@mui/icons-material/Close";
-import { Alert, Collapse, IconButton } from "@mui/material";
+import { Alert, Collapse, IconButton, SxProps } from "@mui/material";
 import { FunctionComponent, PropsWithChildren, useState } from "react";
 
 interface MyAlertProps {
   variant?: "filled" | "outlined" | "standard";
   severity?: "error" | "info" | "success" | "warning";
   message?: string;
+  sx?: SxProps;
+  showCloseIcon?: boolean;
 }
 
 const MyAlert: FunctionComponent<MyAlertProps & PropsWithChildren> = ({
@@ -13,6 +15,8 @@ const MyAlert: FunctionComponent<MyAlertProps & PropsWithChildren> = ({
   severity,
   variant,
   children,
+  sx,
+  showCloseIcon = true,
 }) => {
   const [open, setOpen] = useState(true);
   return (
@@ -20,18 +24,20 @@ const MyAlert: FunctionComponent<MyAlertProps & PropsWithChildren> = ({
       <Alert
         variant={variant}
         severity={severity}
-        hidden
+        sx={{ ...sx, padding: "8px 16px" }}
         action={
-          <IconButton
-            aria-label="close"
-            color="inherit"
-            size="small"
-            onClick={() => {
-              setOpen(false);
-            }}
-          >
-            <CloseIcon fontSize="inherit" />
-          </IconButton>
+          showCloseIcon ? (
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          ) : null
         }
       >
         {message || children}

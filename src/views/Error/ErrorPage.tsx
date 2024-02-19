@@ -33,11 +33,7 @@ const ErrorPage: FunctionComponent<ErrorPageProps> = () => {
                   color: "#39bbdb",
                   marginTop: 1,
                 }}
-                onClick={() =>
-                  navigate({
-                    pathname: "/home",
-                  })
-                }
+                onClick={() => navigate("/home")}
               >
                 Return home
               </Button>

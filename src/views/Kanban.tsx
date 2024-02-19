@@ -1,22 +1,23 @@
 import React, {
   Dispatch,
   SetStateAction,
+  useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
 import styled from "@emotion/styled";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import TaskCard from "./TaskCard";
+import TaskCard from "../components/TaskCard";
 import { Column, TaskItem } from "../types/Column";
-import { StrictModeDroppable } from "./DroppableStrictMode";
+import { StrictModeDroppable } from "../components/DroppableStrictMode";
 import { Box, Typography } from "@mui/material";
-import KanbanToolbar from "./KanbanToolbar";
+import KanbanToolbar from "../components/KanbanToolbar";
+import { DrawerContext } from "../DrawerContext";
 
 type Props = {
   drawerWidth: number;
 };
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -72,7 +73,8 @@ const TaskCount = styled.span`
   font-weight: 600;
 `;
 
-const Kanban: React.FC<Props> = ({ drawerWidth }) => {
+const Kanban: React.FC = () => {
+  const { drawerWidth } = useContext(DrawerContext);
   const [columns, setColumns] = useState<Column | null>(null);
   const headerRef = useRef<HTMLDivElement | null>(null);
 
@@ -96,6 +98,10 @@ const Kanban: React.FC<Props> = ({ drawerWidth }) => {
               title: "In progress",
               items: [],
             },
+            // TO_TEST: {
+            //   title: "To test",
+            //   items: [],
+            // },
             DONE: {
               title: "Done",
               items: [],
@@ -108,13 +114,15 @@ const Kanban: React.FC<Props> = ({ drawerWidth }) => {
           setColumns(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             res.reduce((acc: Column, r: TaskItem) => {
-              acc[r.status].items.push({
+              acc[r.status!].items.push({
                 id: r.id,
                 idNum: r.idNum,
                 title: r.title,
                 status: r.status,
                 priority: r.priority,
                 assignedTo: r.assignedTo,
+                description: r.description,
+                createdBy: r.createdBy,
               });
 
               return acc;
