@@ -6,9 +6,11 @@ import { getTaskPriorityIcon } from "../utils/getTaskPriorityIcon";
 import { icons } from "../consts/Icons";
 import { formatIdNum } from "../utils/formatIdNum";
 import TaskCardToolBar from "./TaskCardToolBar";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Column } from "../types/Column";
 import { Tooltip } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import TaskView from "./TaskView";
 
 const TaskInformation = styled.div`
   display: flex;
@@ -16,6 +18,7 @@ const TaskInformation = styled.div`
   justify-content: center;
   align-items: flex-start;
   padding: 0 15px;
+  cursor: pointer;
   min-height: 106px;
   border-radius: 5px;
   border-left: ${({ color }) => `4px solid ${color}`};
@@ -75,6 +78,23 @@ const TaskCard = ({
 }) => {
   const { icon, color } = getTaskPriorityIcon(item.priority);
   const path = icons[icon];
+  const navigate = useNavigate();
+  const [showTaskView, setShowTaskView] = useState(false);
+  const handleClickTask = () => {
+    setShowTaskView(true);
+  };
+
+  const handleClose = () => {
+    const detectedChange = localStorage.getItem("detected-change");
+    if (detectedChange && JSON.parse(detectedChange)) {
+      setShowTaskView(false);
+      navigate("/");
+      localStorage.setItem("detected-change", "false");
+      return;
+    }
+    setShowTaskView(false);
+  };
+
   return (
     <Draggable draggableId={item.id} index={index}>
       {(provided, snapshot) => (
@@ -88,6 +108,7 @@ const TaskCard = ({
               backgroundColor: snapshot.isDragging ? "lightblue" : "white",
             }}
             color={color}
+            onClick={handleClickTask}
           >
             <TaskCardToolBar item={item} onColumnsChange={onColumnsChange} />
             <div className="secondary-details">
@@ -102,6 +123,14 @@ const TaskCard = ({
               className="logo"
             />
           </TaskInformation>
+
+          {showTaskView && (
+            <TaskView
+              item={item}
+              onColumnsChange={onColumnsChange}
+              onClose={handleClose}
+            />
+          )}
         </div>
       )}
     </Draggable>

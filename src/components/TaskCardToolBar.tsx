@@ -121,6 +121,10 @@ const TaskCardToolBar: FunctionComponent<TaskCardToolBarProps> = ({
         width: "100%",
       }}
       ref={ref}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
     >
       <p className="title">{item.title}</p>
       <IconButton onClick={handleClick} id={`more-vert-${item.id}`}>
