@@ -20,7 +20,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import StatusGroupButton from "./StatusGroupButton";
 import { getTaskPriorityIcon } from "../utils/getTaskPriorityIcon";
 import AvatarLogo from "./AvatarLogo";
-import { makeStyles } from "@mui/styles";
 import PriorityLiveEdit from "./PriorityLiveEdit";
 import AssigneLiveEdit from "./AssigneeLiveEdit";
 import DescriptionLiveEdit from "./DescriptionLiveEdit";
@@ -32,19 +31,11 @@ interface TaskViewProps {
   onColumnsChange: Dispatch<SetStateAction<Column | null>>;
 }
 
-const useStyles = makeStyles(() => ({
-  size: {
-    width: 30,
-    height: 30,
-  },
-}));
-
 const TaskView: FunctionComponent<TaskViewProps> = ({
   item,
   onClose,
   onColumnsChange,
 }) => {
-  const classes = useStyles();
   const priorityValue = OPTIONS.find((o) => o.value === item.priority);
   const { color } = getTaskPriorityIcon(priorityValue?.value ?? "");
   return (
@@ -191,7 +182,10 @@ const TaskView: FunctionComponent<TaskViewProps> = ({
                         <Box>
                           <AvatarLogo
                             username={item.createdBy?.name ?? ""}
-                            className={classes.size}
+                            sx={{
+                              width: 30,
+                              height: 30,
+                            }}
                           />
                         </Box>
                       </ListItem>

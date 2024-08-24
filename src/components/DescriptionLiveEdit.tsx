@@ -9,7 +9,7 @@ import {
 } from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
 import DOMPurify from "dompurify";
-import ReactHtmlParser from "react-html-parser";
+import parse from "html-react-parser";
 import { Box } from "@mui/material";
 import RichEditor2 from "./RichEditor/RichEditor2";
 import RichRditorActions from "./RichEditor/RichEditorActions";
@@ -46,7 +46,7 @@ const DescriptionLiveEdit: FunctionComponent<DescriptionLiveEditProps> = ({
     const sanitizedData = DOMPurify.sanitize(
       stateToHTML(convertFromRaw(content))
     );
-    return ReactHtmlParser(sanitizedData);
+    return parse(sanitizedData);
   };
 
   const handleCancel = () => {

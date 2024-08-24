@@ -12,7 +12,6 @@ import {
   Toolbar,
   useTheme,
 } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import {
   FunctionComponent,
   useContext,
@@ -28,17 +27,6 @@ import Icon from "@mdi/react";
 
 interface DrawerProps {}
 
-const useStyles = makeStyles(() => ({
-  toolbar: {
-    display: "flex",
-    justifyContent: "space-between",
-  },
-  appLogo: {
-    width: 100,
-    height: 100,
-  },
-}));
-
 const loadNavbarState = () => {
   const state = localStorage.getItem("nav-bar-state");
   return state && state !== null ? JSON.parse(state) : null;
@@ -49,7 +37,6 @@ const DrawerContent: FunctionComponent<DrawerProps> = () => {
   const [expandNavBar, setExpandNavBar] = useState(loadNavbarState());
   const navigate = useNavigate();
   const theme = useTheme();
-  const classes = useStyles();
   const kanbanRef = useRef<HTMLDivElement | null>(null);
   const { pathname } = useLocation();
   const handleNavBarToggle = () => {
@@ -73,9 +60,21 @@ const DrawerContent: FunctionComponent<DrawerProps> = () => {
 
   return (
     <div>
-      <Toolbar className={classes.toolbar}>
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         {expandNavBar ? (
-          <img src="kanban.jpg" alt="Kanban logo" className={classes.appLogo} />
+          <img
+            src="kanban.jpg"
+            alt="Kanban logo"
+            style={{
+              width: 100,
+              height: 100,
+            }}
+          />
         ) : null}
         <IconButton onClick={handleNavBarToggle}>
           {expandNavBar ? <ChevronLeft /> : <ChevronRight />}

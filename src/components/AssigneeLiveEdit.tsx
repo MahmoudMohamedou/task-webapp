@@ -3,23 +3,14 @@ import { AssigneeType, TaskItem } from "../types/Column";
 import AssigneeEdit from "./AssigneeEdit";
 import AvatarLogo from "./AvatarLogo";
 import { Box, ListItem, Typography } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 
 interface AssigneLiveEditProps {
   item: TaskItem;
 }
 
-const useStyles = makeStyles(() => ({
-  size: {
-    width: 30,
-    height: 30,
-  },
-}));
-
 const AssigneLiveEdit: FunctionComponent<AssigneLiveEditProps> = ({ item }) => {
   const [currentItem, setCurrentItem] = useState<TaskItem>(item);
   const [editMode, setEditMode] = useState(false);
-  const classes = useStyles();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleAssigneeChange = (_: any, value: AssigneeType | null) => {
@@ -57,6 +48,7 @@ const AssigneLiveEdit: FunctionComponent<AssigneLiveEditProps> = ({ item }) => {
         localStorage.setItem("detected-change", "true");
       });
   };
+
   return (
     <ListItem>
       <Typography variant="body2">Assignee</Typography>
@@ -81,7 +73,10 @@ const AssigneLiveEdit: FunctionComponent<AssigneLiveEditProps> = ({ item }) => {
           >
             <AvatarLogo
               username={currentItem.assignedTo?.name ?? ""}
-              className={classes.size}
+              sx={{
+                width: 30,
+                height: 30,
+              }}
             />
           </Box>
         )}

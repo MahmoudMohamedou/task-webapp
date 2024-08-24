@@ -1,6 +1,7 @@
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import MyTooltip from "./MyTooltip";
+import { SxProps } from "@mui/system";
 
 function stringToColor(string: string) {
   let hash = 0;
@@ -17,6 +18,7 @@ function stringToColor(string: string) {
     const value = (hash >> (i * 8)) & 0xff;
     color += `00${value.toString(16)}`.slice(-2);
   }
+
   /* eslint-enable no-bitwise */
 
   return color;
@@ -35,18 +37,29 @@ interface AvatarLogoProps {
   username: string;
   logoURL?: string;
   className?: string;
+  sx?: SxProps;
 }
+
+const getStyles = (className?: string, sx?: SxProps, bgcolor?: string) => {
+  if (sx) return { sx: bgcolor ? { ...sx, bgcolor } : sx };
+  return bgcolor ? { className, sx: { bgcolor } } : { className };
+};
 
 const AvatarLogo: React.FunctionComponent<AvatarLogoProps> = ({
   username,
   className,
+  sx,
 }) => {
+  const { children, sx: sxExtra } = stringAvatar(username);
   return (
     <MyTooltip title={username || "Not Assigned"}>
       {username ? (
-        <Avatar {...stringAvatar(username)} className={className} />
+        <Avatar
+          children={children}
+          {...getStyles(className, sx, sxExtra.bgcolor)}
+        />
       ) : (
-        <Avatar className={className} />
+        <Avatar {...getStyles(className, sx)} />
       )}
     </MyTooltip>
   );
