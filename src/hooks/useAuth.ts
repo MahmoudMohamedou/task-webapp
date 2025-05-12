@@ -13,7 +13,6 @@ const useAuth = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         setAuth(res);
       })
       .catch((e) => {

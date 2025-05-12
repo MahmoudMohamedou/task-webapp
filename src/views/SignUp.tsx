@@ -61,7 +61,7 @@ const SignUp: FC = () => {
     fetch(import.meta.env.VITE_API_URL_SIGNUP!, {
       method: "POST",
       credentials: "include",
-      body: JSON.stringify({ email, password, name, repeatPassword }),
+      body: JSON.stringify({ email, password, name }),
       headers: {
         "Content-Type": "application/json",
       },

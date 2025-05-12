@@ -15,6 +15,7 @@ import {
   Dispatch,
   FunctionComponent,
   SetStateAction,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -27,6 +28,7 @@ import { useNavigate } from "react-router-dom";
 import ConfirmDialog from "./ConfirmDialog";
 import WarningIcon from "@mui/icons-material/Warning";
 import ToastSuccess from "./ToastSuccess";
+import { AuthContext } from "../Auth/AuthContext";
 
 interface TaskCardToolBarProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,7 +43,11 @@ const TaskCardToolBar: FunctionComponent<TaskCardToolBarProps> = ({
   const [anchorEl, setAnchorEl] = useState<(EventTarget & HTMLElement) | null>(
     null
   );
-  const [showToast, setShowToast] = useState(false);
+  const { auth } = useContext(AuthContext);
+  const [showToast, setShowToast] = useState<{
+    message: string;
+    backgroundColor: string;
+  } | null>(null);
   const navigate = useNavigate();
 
   const [showTaskView, setShowTaskView] = useState<boolean>(false);
@@ -76,7 +82,10 @@ const TaskCardToolBar: FunctionComponent<TaskCardToolBarProps> = ({
       .then(() => {
         setAnchorEl(null);
         setShowConfirmDialog(false);
-        setShowToast(true);
+        setShowToast({
+          message: "The task was successfuly deleted !",
+          backgroundColor: colors.red.A400,
+        });
 
         // onColumnsChange((prevState) => {
         //   const newItems = prevState?.[res.status].items.filter(
@@ -90,6 +99,13 @@ const TaskCardToolBar: FunctionComponent<TaskCardToolBarProps> = ({
         //     },
         //   };
         // });
+      })
+      .catch((error) => {
+        console.log(error);
+        setShowToast({
+          message: error.message,
+          backgroundColor: colors.red.A400,
+        });
       });
   };
 
@@ -102,6 +118,12 @@ const TaskCardToolBar: FunctionComponent<TaskCardToolBarProps> = ({
       return;
     }
     setShowTaskView(false);
+  };
+
+  const isDeleteTaskDisabled = () => {
+    if (item.createdBy.id !== auth?.id && !auth?.permissions?.includes("ADMIN"))
+      return true;
+    return false;
   };
 
   useEffect(() => {
@@ -152,7 +174,10 @@ const TaskCardToolBar: FunctionComponent<TaskCardToolBarProps> = ({
                 </ListItemIcon>
                 <ListItemText primary="View" />
               </ListItemButton>
-              <ListItemButton onClick={handleRemoveTask}>
+              <ListItemButton
+                onClick={handleRemoveTask}
+                disabled={isDeleteTaskDisabled()}
+              >
                 <ListItemIcon
                   sx={{
                     minWidth: "40px",
