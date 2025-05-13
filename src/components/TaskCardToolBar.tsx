@@ -73,40 +73,34 @@ const TaskCardToolBar: FunctionComponent<TaskCardToolBarProps> = ({
     setShowConfirmDialog(false);
   };
 
-  const handleConfirm = () => {
-    fetch(`${import.meta.env.VITE_API_URL_TASK!}/${item.id}`, {
-      method: "DELETE",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then(() => {
-        setAnchorEl(null);
-        setShowConfirmDialog(false);
-        setShowToast({
-          message: "The task was successfuly deleted !",
-          backgroundColor: colors.red.A400,
-        });
-
-        // onColumnsChange((prevState) => {
-        //   const newItems = prevState?.[res.status].items.filter(
-        //     (f) => f.id !== res.id
-        //   );
-        //   return {
-        //     ...prevState,
-        //     [res.status]: {
-        //       ...prevState?.[res.status],
-        //       items: newItems,
-        //     },
-        //   };
-        // });
-      })
-      .catch((error) => {
-        console.log(error);
-        setShowToast({
-          message: error.message,
-          backgroundColor: colors.red.A400,
-        });
+  const handleConfirm = async () => {
+    try {
+      const deleteTask = await fetch(
+        `${import.meta.env.VITE_API_URL_TASK!}/${item.id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+      console.log(deleteTask.status);
+      if (deleteTask.status === 401) {
+        throw new Error("Unauthorized");
+      }
+      setAnchorEl(null);
+      setShowConfirmDialog(false);
+      setShowToast({
+        message: "The task was successfuly deleted !",
+        backgroundColor: colors.green.A400,
       });
+    } catch (error: any) {
+      console.log(error);
+      setAnchorEl(null);
+      setShowConfirmDialog(false);
+      setShowToast({
+        message: "Unauthorized",
+        backgroundColor: colors.red.A400,
+      });
+    }
   };
 
   const handleClose = () => {
@@ -121,7 +115,10 @@ const TaskCardToolBar: FunctionComponent<TaskCardToolBarProps> = ({
   };
 
   const isDeleteTaskDisabled = () => {
-    if (item.createdBy.id !== auth?.id && !auth?.permissions?.includes("ADMIN"))
+    if (
+      item.createdBy?.id !== auth?.id &&
+      !auth?.permissions?.includes("ADMIN")
+    )
       return true;
     return false;
   };
@@ -220,10 +217,10 @@ const TaskCardToolBar: FunctionComponent<TaskCardToolBarProps> = ({
       </ConfirmDialog>
       {showToast && (
         <ToastSuccess
-          message="The task was successfuly deleted !"
+          message={showToast.message}
           variant="filled"
           sx={{
-            backgroundColor: colors.green.A400,
+            backgroundColor: showToast.backgroundColor,
           }}
         />
       )}
